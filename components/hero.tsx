@@ -58,7 +58,7 @@ export default function Hero() {
           [...Array(15)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-2 h-2 bg-green-200 rounded-full"
+              className="absolute w-2 max-sm:hidden h-2 bg-green-200 rounded-full"
               initial={{
                 opacity: 0,
                 x: 15 + ((i * 5) % 70) + "%",
