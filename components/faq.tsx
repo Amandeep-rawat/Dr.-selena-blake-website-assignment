@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown, HelpCircle } from "lucide-react"
 
 const faqs = [
@@ -34,43 +34,47 @@ const faqs = [
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   return (
-    <section className="py-32 bg-gradient-to-br from-stone-50 to-white relative overflow-hidden">
-      {/* Background Elements */}
+    <section className="py-20 md:py-32 bg-gradient-to-br from-stone-50 to-white relative overflow-hidden">
+      {/* Background Elements - Simplified */}
       <div className="absolute inset-0">
-        <motion.div
-          className="absolute top-20 right-20 w-72 h-72 bg-teal-100/40 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY }}
-        />
-        <motion.div
-          className="absolute bottom-20 left-20 w-96 h-96 bg-stone-200/30 rounded-full blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY }}
-        />
+        <div className="absolute top-20 right-20 w-72 h-72 bg-teal-100/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-stone-200/30 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16 md:mb-20"
         >
           <motion.div
             className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-6"
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
             <HelpCircle className="w-4 h-4" />
             Common Questions
           </motion.div>
 
-          <h2 className="text-5xl md:text-6xl font-serif text-stone-800 mb-8">Frequently Asked Questions</h2>
-          <p className="text-xl text-stone-600 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-stone-800 mb-6 md:mb-8">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-lg md:text-xl text-stone-600 max-w-3xl mx-auto">
             Everything you need to know about therapy, sessions, and getting started
           </p>
         </motion.div>
@@ -79,20 +83,20 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.05 }}
               viewport={{ once: true }}
-              className="mb-6"
+              className="mb-4 md:mb-6"
             >
               <motion.button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full text-left bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 border border-stone-200/50 group"
-                whileHover={{ scale: 1.01 }}
+                className="w-full text-left bg-white/80 rounded-xl md:rounded-2xl p-6 md:p-8 shadow-md md:shadow-lg hover:shadow-lg md:hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 border border-stone-200/50 group"
+                whileHover={isMobile ? {} : { scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl md:text-2xl font-semibold text-stone-800 pr-4 group-hover:text-teal-700 transition-colors">
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-semibold text-stone-800 pr-4 group-hover:text-teal-700 transition-colors">
                     {faq.question}
                   </h3>
                   <motion.div
@@ -100,7 +104,7 @@ export default function FAQ() {
                     transition={{ duration: 0.3 }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className="w-6 h-6 text-teal-600" />
+                    <ChevronDown className="w-5 h-5 md:w-6 md:h-6 text-teal-600" />
                   </motion.div>
                 </div>
               </motion.button>
@@ -111,16 +115,16 @@ export default function FAQ() {
                   height: openIndex === index ? "auto" : 0,
                   opacity: openIndex === index ? 1 : 0,
                 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
                 <motion.div
                   initial={{ y: -10 }}
                   animate={{ y: openIndex === index ? 0 : -10 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-gradient-to-r from-teal-50 to-stone-50 mx-4 rounded-xl p-6 mt-2 border-l-4 border-teal-500"
+                  className="bg-gradient-to-r from-teal-50 to-stone-50 mx-2 md:mx-4 rounded-lg md:rounded-xl p-4 md:p-6 mt-2 border-l-4 border-teal-500"
                 >
-                  <p className="text-stone-700 leading-relaxed text-lg">{faq.answer}</p>
+                  <p className="text-stone-700 leading-relaxed text-base md:text-lg">{faq.answer}</p>
                 </motion.div>
               </motion.div>
             </motion.div>
